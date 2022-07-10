@@ -1,0 +1,23 @@
+# This is the basic algorithm for the chaos agent
+# The Python code is going to be extermely similar to it.
+
+client = connet_to_kubernetes()
+
+# retrieves our agent configuraton from the kube-api-server
+chaos_agent = client.get_chaos_agent()
+
+while True:
+      pods = client.list_pods(exclude_namespaces)
+      deployments = client.list_deployments(exclude_namespaces)
+      namespaces =   client.list_configmaps(exclude_namespaces)
+      
+      if chaos_agent.tantrum:
+         randomly_kill_pods(pods, chaos_agent.tolerance, chaos_agent.eagerness)
+
+      if chaos_agent.cancer:
+         randomly_scale_deployments(deployments, chaos_agent.eagerness)
+      
+      if chaos_agent.ipsum:
+         randomly_write_configmaps(configmaps, chaos_agent.eagerness)
+
+      time.sleep(chaos_agent.pause)
