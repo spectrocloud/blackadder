@@ -1,4 +1,3 @@
-import logging
 import random
 import sys
 import time
@@ -10,8 +9,6 @@ import requests
 
 
 from pykube import Pod, Deployment, ConfigMap
-
-#logger = logging.getLogger("chaos-controller")
 
 
 def list_objects(self, k8s_obj, exclude_namespaces):
