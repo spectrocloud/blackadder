@@ -1,5 +1,6 @@
 import logging
 import random
+import sys
 import time
 
 import lorem
@@ -10,7 +11,7 @@ import requests
 
 from pykube import Pod, Deployment, ConfigMap
 
-logger = logging.getLogger("chaos-controller")
+#logger = logging.getLogger("chaos-controller")
 
 
 def list_objects(self, k8s_obj, exclude_namespaces):
@@ -49,7 +50,7 @@ def randomly_kill_pods(pods, tolerance, eagerness):
     for p in pods:
         if random.randint(0, 100) < eagerness:
             p.delete()
-            logger.info(f"Deleted {p.namespace}/{p.name}")
+            print(f"Deleted {p.namespace}/{p.name}",)
 
 
 def randomly_scale_deployments(deployments, eagerness):
@@ -60,17 +61,18 @@ def randomly_scale_deployments(deployments, eagerness):
                     if d.replicas < 128:
                         d.replicas = min(d.replicas * 2, 128)
                     d.update()
-                    logger.info(f"scaled {d.namespace}/{d.name} to {d.replicas}")
+                    print(f"scaled {d.namespace}/{d.name} to {d.replicas}",)
                     break
                 except (requests.exceptions.HTTPError, pykube.exceptions.HTTPError):
-                    logger.info(f"error scaling {d.namespace}/{d.name} to {d.replicas}")
+                    print(
+                        f"error scaling {d.namespace}/{d.name} to {d.replicas}",)
                     d.reload()
                     continue
 
 
 def randomly_write_configmaps(configmaps, eagerness):
     for cm in configmaps:
-        logger.info(f"Checking {cm.namespace}/{cm.name}")
+        print(f"Checking {cm.namespace}/{cm.name}")
         if cm.obj.get("immutable"):
             continue
 
@@ -78,25 +80,32 @@ def randomly_write_configmaps(configmaps, eagerness):
             for k, v in cm.obj["data"].items():
                 cm.obj["data"][k] = lorem.paragraph()
 
-            logger.info(f"Lorem Impsum in {cm.namespace}/{cm.name}")
+            print(f"Lorem Impsum in {cm.namespace}/{cm.name}",)
 
 
-while True:
-    pods = api.list_objects(Pod, exclude_namespaces)
-    deployments = api.list_objects(Deployment, exclude_namespaces)
-    configmaps = api.list_objects(ConfigMap, exclude_namespaces)
+def main():
+    while True:
+        pods = api.list_objects(Pod, exclude_namespaces)
+        deployments = api.list_objects(Deployment, exclude_namespaces)
+        configmaps = api.list_objects(ConfigMap, exclude_namespaces)
 
-    if agent.config.tantrumMode:
-        randomly_kill_pods(pods,
-                           agent.config.podTolerance,
-                           agent.config.eagerness)
+        if agent.config.tantrumMode:
+            randomly_kill_pods(pods,
+                               agent.config.podTolerance,
+                               agent.config.eagerness)
 
-    if agent.config.cancerMode:
-        randomly_scale_deployments(deployments,
-                                   agent.config.eagerness)
+        if agent.config.cancerMode:
+            randomly_scale_deployments(deployments,
+                                       agent.config.eagerness)
 
-    if agent.config.ipsumMode:
-        randomly_write_configmaps(configmaps,
-                                  agent.config.eagerness)
+        if agent.config.ipsumMode:
+            randomly_write_configmaps(configmaps,
+                                      agent.config.eagerness)
 
-    time.sleep(agent.config.pauseDuration)
+        time.sleep(agent.config.pauseDuration)
+
+
+if __name__ == "__main__":
+    print("This is the blackadder version 0.1.1")
+    print("Ready to start a havoc in your cluster")
+    main()
