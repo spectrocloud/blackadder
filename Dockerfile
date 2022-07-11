@@ -25,4 +25,4 @@ WORKDIR /usr/src/
 
 COPY controller.py .
 
-CMD ["./venv/bin/python", "controller.py"]
+CMD ["./venv/bin/python", "controller.py", "2>&1"]
