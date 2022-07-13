@@ -54,7 +54,9 @@ spec:
               ipsumMode:
                 type: boolean 
               eagerness:
-                type: number
+                type: integer
+                minimum: 1
+                maximum: 100
               pauseDuration:
                 type: integer
               excludedNamespaces:
