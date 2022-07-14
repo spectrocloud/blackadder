@@ -5,9 +5,9 @@ PROJ     := blackadder
 IMG      := $(REGISTRY)/$(ORG)/$(PROJ):$(VERSION)
 
 docker-build:
-	docker build -t $(REGISTRY)/$(ORG)/grafzahl:$(VERSION) .
+	docker build -t $(REGISTRY)/$(ORG)/$(PROJ):$(VERSION) .
 
 
 docker-push:
-	docker push $(REGISTRY)/$(ORG)/grafzahl:$(VERSION)
+	docker push $(REGISTRY)/$(ORG)/$(PROJ):$(VERSION)
 
