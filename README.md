@@ -8,7 +8,7 @@ Kubernetes Operators with Python.
 The Operator's algorithm in pseudo code is:
 
 ```
-client = connet_to_kubernetes()
+client = connect_to_kubernetes()
 
 # retrieves our agent configuration from the kube-api-server
 chaos_agent = client.get_chaos_agent()
